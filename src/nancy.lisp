@@ -36,7 +36,7 @@
   "HTTP hanlder skeleton for different HTTP-METHODs.
 This macro should expand in an environment with bound URL and BODY variables."
   (let ((g!params (gensym "params")))
-    ``(setf (ningle:route wd:*webapp*
+    ``(setf (ningle:route nancy:*webapp*
                           ,url
                           ,@(if regexp (list :regexp t))
                           :method ,,http-method)

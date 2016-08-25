@@ -13,7 +13,7 @@
                :lack
                :clack
                :clack-errors
-               :lack-middleware-errors)
+               :lack-middleware-clack-errors)
   :components ((:module "src"
                 :components ((:file "nancy"))))
   :description "A (very) thin web wrapper"

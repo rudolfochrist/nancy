@@ -1,0 +1,26 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+
+(ql:quickload :fiveam)
+(ql:quickload :cl-coveralls)
+(ql:quickload :nancy)
+(ql:quickload :nancy-test)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (uiop:quit (if (handler-case
+                     (progn
+                       (let ((5am:*debug-on-error* t)
+                             (5am:*debug-on-failure* t))
+                         
+                         (coveralls:with-coveralls (:exclude (list "t"))
+                           (asdf:test-system :nancy))
+                         ))
+                   (serious-condition (c)
+                     (describe c)
+                     (uiop:quit 2)))
+                 0
+                 1)))

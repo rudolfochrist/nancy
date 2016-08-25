@@ -1,0 +1,33 @@
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+
+* NAME
+
+nancy --- A (very) thin web wrapper
+
+* VERSION
+
+#+BEGIN_SRC lisp :exports results
+(format nil "Version ~A"
+        (asdf:component-version (asdf:find-system :nancy)))
+#+END_SRC
+
+* SYNOPSIS
+
+* DESCRIPTION
+
+** FUNCTIONS
+
+** VARIABLES
+
+* AUTHOR
+
+nancy ([[mailto:rudolfo.christ@gmail.com]])
+
+* COPYRIGHT
+
+Copyright (c) 2016 Sebastian Christ (rudolfo.christ@gmail.com)
+
+Released under the LLGPL license.
+
+* SEE ALSO

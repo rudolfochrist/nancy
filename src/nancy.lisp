@@ -102,7 +102,6 @@ This macro should expand in an environment with bound URL and BODY variables."
 
 ;;; Server Management
 
-
 (defvar *handler* nil
   "Server handler.")
 

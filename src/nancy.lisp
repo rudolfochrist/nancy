@@ -110,7 +110,9 @@ This macro should expand in an environment with bound URL and BODY variables."
 (defun start (&key (server :hunchentoot) (port 4242) productionp)
   "Starts the server SERVER on port PORT.
 
-Set :PRODUCTIONP to T if you run this on your production server."
+Set :PRODUCTIONP to T if you run this on your production
+server. Currently PRODUCTIONP has only effect on SBCL."
+  #-sbcl (declare (ignore productionp))
   (when *handler*
     (restart-case (error "Server already running.")
       (restart-server ()
@@ -120,6 +122,7 @@ Set :PRODUCTIONP to T if you run this on your production server."
         (clack:clackup (builder
                         (:static :root *static-root*
                                  :path *static-path*)
+                        #+sbcl
                         (if productionp
                             nil
                             :clack-errors)

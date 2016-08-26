@@ -8,9 +8,12 @@
   :description "Test system of nancy"
   :license "LLGPL"
   :depends-on (:fiveam
-               :nancy)
+               :drakma
+               :nancy
+               :puri)
   :components ((:module "t"
-                :components ((:file "nancy"))))
+                :components ((:file "package")
+                             (:file "integration-tests"))))
   :perform (test-op (op c)
                     (asdf:clear-system c)
-                    (uiop:symbol-call :5am :run!)))
+                    (uiop:symbol-call :nancy-test :run-tests)))

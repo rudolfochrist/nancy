@@ -44,12 +44,7 @@ This macro should expand in an environment with bound URL and BODY variables."
               (declare (ignorable ,',g!params))
               (flet ((params (&optional name)
                        (if name
-                           (cdr (assoc (typecase name
-                                         (string name)
-                                         (keyword
-                                          (string-downcase (string name))))
-                                       ,',g!params
-                                       :test #'string=))
+                           (cdr (assoc name ,',g!params :test #'string-equal))
                            ,',g!params)))
                 ,@body)))))
 

@@ -34,6 +34,10 @@
 
 ;;; Test application
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (setf *static-root* (merge-pathnames #p"t/static/"
+                                       (asdf:system-source-directory :nancy))))
+
 (xget ("/bingo")
   "bingo")
 
@@ -165,7 +169,12 @@
                :path "/other"
                :body "/proxy"))
 
-;;; test static files
+(test static-files
+  (is-response (http-request (url "/public/foo.txt"))
+               :status 200
+               :path "/public/foo.txt"
+               :body "foo
+"))
 
 
 (defun run-tests ()

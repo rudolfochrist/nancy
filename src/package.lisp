@@ -22,8 +22,9 @@
    #:xdelete
    #:xoptions
    #:redirect
-   #:*webapp-config*
    #:stop
    #:start
    #:params
-   #:status))
+   #:status
+   #:*static-root*
+   #:*static-path*))

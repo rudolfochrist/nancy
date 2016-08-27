@@ -69,6 +69,24 @@
 (xget ("/other")
   (redirect "/proxy" :status :see-other))
 
+(defun dot-name (name)
+  (format nil "::~A::" name))
+
+(xput ("/putting")
+  (dot-name (params "name")))
+
+(xpatch ("/patching")
+  (dot-name (params "name")))
+
+(xdelete ("/remove/:id")
+  (let ((id (params :id)))
+    (if (string= "1" id)
+        (status :no-content)
+        (status :not-found))))
+
+(xoptions ("/show-options")
+  (format nil "GET POST PUT PATCH DELETE OPTIONS"))
+
 
 ;;; Tests
 
@@ -109,13 +127,31 @@
                :path "/create"
                :body "Albert::65"))
 
-;;; test put with params
+(test put
+  (is-response (http-request (url "/putting")
+                             :method :put
+                             :parameters '(("name" . "Albert")))
+               :status 200
+               :path "/putting"
+               :body "::Albert::"))
 
-;;; test patch with params
+(test patch
+  (is-response (http-request (url "/patching")
+                             :method :patch
+                             :parameters '(("name" . "Albert")))
+               :status 200
+               :path "/patching"
+               :body "::Albert::"))
 
-;;; test delete
+(test delete
+  (is-response-status 204 (http-request (url "/remove/1") :method :delete))
+  (is-response-status 404 (http-request (url "/remove/42") :method :delete)))
 
-;;; test options
+(test options
+  (is-response (http-request (url "/show-options") :method :options)
+               :status 200
+               :path "/show-options"
+               :body "GET POST PUT PATCH DELETE OPTIONS"))
 
 (test redirect
   (is-response (http-request (url "/old-endpoint"))

@@ -1,5 +1,12 @@
 #+STARTUP: showall
 #+OPTIONS: toc:nil
+#+PROPERTY: header-args :session *nancy-readme*
+
+#+BEGIN_SRC lisp :exports none :var path=(file-name-directory (buffer-file-name)) :results silent
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (pushnew path asdf:*central-registry*)
+  (ql:quickload '(nancy nancy-test)))
+#+END_SRC
 
 * NAME
 
@@ -14,15 +21,169 @@ nancy --- A (very) thin web wrapper
 
 * SYNOPSIS
 
+#+BEGIN_SRC lisp :exports code :results silent
+(defpackage #:nancy-demo
+  (:use :cl :nancy))
+(in-package :nancy-demo)
+
+(xget ("/")
+  "Finally at home.")
+
+(start :server :hunchentoot
+       :port 4242)
+#+END_SRC
+
+#+BEGIN_SRC lisp :exports none :results silent
+(stop)
+#+END_SRC
+
 * DESCRIPTION
 
+=nancy= is (another) [[http://www.sinatrarb.com/][Sinatra]]-like web framework. Actually =nancy= is a (very) thin wrapper around
+[[https://github.com/fukamachi/ningle][fukamachi/ningle]]. 
+
+=nancy= is wholly unopinionated and should be orthogonal to your stack. It neither prescribes HTML rendering
+or DB drivers nor does it prescribe a fixed directory structure. Use whatever you like most! 
+
 ** FUNCTIONS
+:PROPERTIES:
+:header-args: :exports code
+:END:
+
+*** xget
+
+=xget= defines a handler for a GET request. 
+
+#+BEGIN_SRC lisp
+(xget ("/greeting")
+  "Hi")
+#+END_SRC
+
+#+RESULTS:
+: #<Anonymous Function #x30200393A08F>
+
+To use path variables, specify them with a trailing colon:
+
+#+BEGIN_SRC lisp
+(xget ("/greet/:name")
+  (let ((name (params :name)))
+    (format nil "Hi ~A" name)))
+#+END_SRC
+
+#+RESULTS:
+: #<Anonymous Function #x302003997ECF>
+
+You can use wildcards and regular expressions in URL, just like in ningle. 
+
+For other HTTP methods use =xpost=, =xput=, =xpatch=, =xdelete= and =xoptions= respectively.
+
+*** params
+
+You can access request parameters through the =params= function. To access path variables pass the same keyword
+you used in the path to =params=:
+
+#+BEGIN_SRC lisp
+(xget ("/users/:id")
+  (let ((id (params :id)))
+    (format nil "User with ID=~A requested" id)))
+#+END_SRC
+
+#+RESULTS:
+: #<Anonymous Function #x302003AD2E0F>
+
+If you want to access GET parameters (or POST) you need to use a string with the parameter name: 
+
+#+BEGIN_SRC lisp
+;;; URL: /greet-me?name=Frank
+(xget ("/greet-me")
+  (let ((name (params "name")))
+    (format nil "Hi ~A" name)))
+#+END_SRC
+
+#+RESULTS:
+: #<Anonymous Function #x302003A12E8F>
+
+*** redirect
+
+As the name indicates this function can be used to establish redirects.
+
+#+BEGIN_SRC lisp
+(xpost ("/users")
+  (let ((username (params "username"))
+        (email (params "email")))
+    (create-user name email)
+    (redirect "/")))
+#+END_SRC
+
+If you want to use a different redirect status you can pass it along to =redirect= either as status number or
+as keyword.
+
+#+BEGIN_SRC lisp
+(xget ("/old-endpoint")
+  (redirect "/new-endpoint" :status 301))
+#+END_SRC
+
+is the same as 
+
+#+BEGIN_SRC lisp
+(xget ("/old-endpoint")
+  (redirect "/new-endpoint" :status :moved-permanently))
+#+END_SRC
+
+*** start
+
+This starts up the server. You can pass the port or the server has keyword arguments. 
+
+#+BEGIN_SRC lisp
+(start :port 4242 :server :hunchentoot)
+#+END_SRC
+
+Since =nancy= is based on [[https://github.com/fukamachi/ningle][ningle]] and [[https://github.com/fukamachi/ningle][ningle]] is based on [[http://clacklisp.org/][clack]] you can switch the web server easily:
+
+#+BEGIN_SRC lisp
+(ql:quickload :woo)
+(start :port 4242 :server :woo)
+#+END_SRC
+
+*** stop
+
+If the times has come to put your webapp to rest you can use =stop= to gracefully stop it.
+
+*** status
+
+=status= is a helper function to set the response status easily. Like =redirect= it takes a numeric or a keyword
+status code. For example.
+
+#+BEGIN_SRC lisp
+(xpost ("/users")
+  (let ((username (params "username"))
+        (email (params "email")))
+    (create-user useranme email)
+    (status :created)))
+#+END_SRC
 
 ** VARIABLES
 
+*** CONFIGURATION VALUES
+
+- =*static-root*= :: Set =*static-root*= to the directory path of your static files (e.g. Javascript or CSS) are
+     located. This defaults to =static/=.
+- =*static-path*= :: Set =*static-path*= to the URL endpoint you like to use. This defaults to =/public/=.
+
+*** OTHER VARIABLES
+
+- =*request*= :: The current request object.
+- =*response*= :: The current response object.
+- =*webapp*= :: The current =ningle= instance. This shouldn't be modified directly.
+
+* LIMITATIONS
+
+Although =nancy= /works/[1] on multiple Common Lisp implementations, it favours [[http://sbcl.org/][SBCL]]. This means, if you use a
+different implementation you can run into un-addressed bugs and limitations. 
+
 * AUTHOR
 
-nancy ([[mailto:rudolfo.christ@gmail.com]])
+Sebastian Christ ([[mailto:rudolfo.christ@gmail.com]])
 
 * COPYRIGHT
 
@@ -31,3 +192,7 @@ Copyright (c) 2016 Sebastian Christ (rudolfo.christ@gmail.com)
 Released under the LLGPL license.
 
 * SEE ALSO
+
+* Footnotes
+
+[1] And with works we mean compiles.

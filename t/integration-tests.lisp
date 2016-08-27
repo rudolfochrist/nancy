@@ -60,6 +60,15 @@
 (xget ("/status-keyword-204")
   (status :no-content))
 
+(xget ("/new-endpoint")
+  "")
+
+(xget ("/old-endpoint")
+  (redirect "/new-endpoint"))
+
+(xget ("/other")
+  (redirect "/proxy" :status :see-other))
+
 
 ;;; Tests
 
@@ -108,7 +117,17 @@
 
 ;;; test options
 
-;;; test redirect
+(test redirect
+  (is-response (http-request (url "/old-endpoint"))
+               :status 200
+               :path "/new-endpoint"
+               :body ""))
+
+(test redirect-keyword
+  (is-response (http-request (url "/other") :redirect nil)
+               :status 303
+               :path "/other"
+               :body "/proxy"))
 
 ;;; test static files
 

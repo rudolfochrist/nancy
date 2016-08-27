@@ -48,6 +48,18 @@
 (xget ("/error")
   (error "Serious error occurred!"))
 
+(xpost ("/create")
+  (let ((name (params "name"))
+        (age (params "age")))
+    (status :created)
+    (format nil "~A::~A" name age)))
+
+(xget ("/status-204")
+  (status 204))
+
+(xget ("/status-keyword-204")
+  (status :no-content))
+
 
 ;;; Tests
 
@@ -74,7 +86,19 @@
 (test home-is-404
   (is-response-status 404 (http-request (url "/") :method :get)))
 
-;;; test post with params
+(test custom-status
+  (is-response-status 204 (http-request (url "/status-204"))))
+
+(test custom-keyword-status
+  (is-response-status 204 (http-request (url "/status-keyword-204"))))
+
+(test post
+  (is-response (http-request (url "/create")
+                             :parameters '(("name" . "Albert") ("age" . "65"))
+                             :method :post)
+               :status 201
+               :path "/create"
+               :body "Albert::65"))
 
 ;;; test put with params
 

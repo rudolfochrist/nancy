@@ -15,6 +15,8 @@
                :clack-errors
                :lack-middleware-clack-errors)
   :components ((:module "src"
-                :components ((:file "nancy"))))
+                :components ((:file "package")
+                             (:file "http-status")
+                             (:file "nancy"))))
   :description "A (very) thin web wrapper"
   :in-order-to ((test-op (test-op :nancy-test))))

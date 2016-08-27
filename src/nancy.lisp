@@ -1,32 +1,5 @@
 ;;; nancy.lisp
 
-(in-package :cl-user)
-(defpackage #:nancy
-  (:use :cl)
-  (:import-from :lack.response
-                #:response-status
-                #:response-headers)
-  (:import-from :lack
-                #:builder)
-  (:import-from :ningle
-                *request*
-                *response*) 
-  (:export
-   #:*webapp*
-   #:*request*
-   #:*response*
-   #:xget
-   #:xpost
-   #:xput
-   #:xpatch
-   #:xdelete
-   #:xoptions
-   #:redirect
-   #:*webapp-config*
-   #:stop
-   #:start
-   #:params))
-
 (in-package :nancy)
 
 (defvar *webapp* (make-instance 'ningle:<app>)
@@ -81,9 +54,19 @@ This macro should expand in an environment with bound URL and BODY variables."
 (defun redirect (url &key (status 302))
   "Redirect to URL with STATUS."
   (let ((res *response*))
-    (setf (response-status res) status
+    (setf (response-status res) (if (keywordp status)
+                                    (http-keyword-status status)
+                                    status)
           (getf (response-headers res) :location) url)
     url))
+
+(defun status (status-code)
+  (let ((resp *response*))
+    (setf (response-status resp)
+          (if (keywordp status-code)
+              (http-keyword-status status-code)
+              status-code))
+    ""))
 
 
 ;;; Configuration

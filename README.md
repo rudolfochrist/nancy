@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rudolfochrist/nancy.svg?branch=master)](https://travis-ci.org/rudolfochrist/nancy) [![Coverage Status](https://coveralls.io/repos/github/rudolfochrist/nancy/badge.svg?branch=master)](https://coveralls.io/github/rudolfochrist/nancy?branch=master)
+
 # NAME
 
 nancy &#x2014; A (very) thin web wrapper
@@ -138,6 +140,8 @@ Copyright (c) 2016 Sebastian Christ (rudolfo.christ@gmail.com)
 Released under the LLGPL license.
 
 # SEE ALSO
+
+-   [API Documentation](https://htmlpreview.github.io/?https://github.com/rudolfochrist/nancy/blob/master/docs/nancy.html)
 
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>

@@ -2,6 +2,8 @@
 #+OPTIONS: toc:nil
 #+PROPERTY: header-args :session *nancy-readme*
 
+#+MARKDOWN: [![Build Status](https://travis-ci.org/rudolfochrist/nancy.svg?branch=master)](https://travis-ci.org/rudolfochrist/nancy) [![Coverage Status](https://coveralls.io/repos/github/rudolfochrist/nancy/badge.svg?branch=master)](https://coveralls.io/github/rudolfochrist/nancy?branch=master)
+
 #+BEGIN_SRC lisp :exports none :var path=(file-name-directory (buffer-file-name)) :results silent
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (pushnew path asdf:*central-registry*)
@@ -192,6 +194,8 @@ Copyright (c) 2016 Sebastian Christ (rudolfo.christ@gmail.com)
 Released under the LLGPL license.
 
 * SEE ALSO
+
+- [[https://htmlpreview.github.io/?https://github.com/rudolfochrist/nancy/blob/master/docs/nancy.html][API Documentation]]
 
 * Footnotes
 

@@ -49,6 +49,11 @@
   (define-keyword-status :gateway-time-out 504)
   (define-keyword-status :version-not-supported 505))
 
-(defun http-keyword-status (keyword)
-  "Retrieve numeric status code for keyword."
-  (gethash keyword *http-keyword-status*))
+(defun http-status (status)
+  "Resolve status code.
+
+STATUS can be either a number (e.g. 200) or a keyword (e.g. :OK)."
+  (check-type status (or fixnum keyword))
+  (if (keywordp status)
+      (gethash status *http-keyword-status*)
+      status))

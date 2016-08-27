@@ -54,18 +54,14 @@ This macro should expand in an environment with bound URL and BODY variables."
 (defun redirect (url &key (status 302))
   "Redirect to URL with STATUS."
   (let ((res *response*))
-    (setf (response-status res) (if (keywordp status)
-                                    (http-keyword-status status)
-                                    status)
+    (setf (response-status res) (http-status status)
           (getf (response-headers res) :location) url)
     url))
 
 (defun status (status-code)
   (let ((resp *response*))
     (setf (response-status resp)
-          (if (keywordp status-code)
-              (http-keyword-status status-code)
-              status-code))
+          (http-status status-code))
     ""))
 
 
